@@ -1,0 +1,33 @@
+{
+  "name": "@appolo/route",
+  "description": "",
+  "keywords": [],
+  "author": {
+    "name": "Roman Svichar",
+    "email": "shmoop207@gmail.com"
+  },
+  "engines": {
+    "node": ">= 12.12.x",
+    "npm": ">= 6.x.x"
+  },
+  "scripts": {},
+  "main": "./index.js",
+  "version": "8.0.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shmoop207/appolo-route.git"
+  },
+  "readme": "",
+  "readmeFilename": "README.md",
+  "dependencies": {
+    "@appolo/engine": "^8.0.5",
+    "@appolo/inject": "^8.0.1",
+    "@appolo/utils": "^8.0.0",
+    "@appolo/agent": "^8.0.0",
+    "tslib": "^2.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.2"
+  }
+}
