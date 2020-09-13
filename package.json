@@ -10,6 +10,9 @@
     "node": ">= 12.12.x",
     "npm": ">= 6.x.x"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {},
   "main": "./index.js",
   "version": "8.0.0",
@@ -21,10 +24,10 @@
   "readme": "",
   "readmeFilename": "README.md",
   "dependencies": {
+    "@appolo/agent": "^8.0.0",
     "@appolo/engine": "^8.0.5",
     "@appolo/inject": "^8.0.1",
     "@appolo/utils": "^8.0.0",
-    "@appolo/agent": "^8.0.0",
     "tslib": "^2.0.1"
   },
   "devDependencies": {
