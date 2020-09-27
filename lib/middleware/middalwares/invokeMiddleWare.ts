@@ -30,15 +30,13 @@ export function invokeMiddleWare(middlewareId: string) {
 
 }
 
-export function handleMiddlewareError(e: Error): HttpError {
+export function handleMiddlewareError(e: HttpError): HttpError {
 
-
-    if (e instanceof HttpError) {
-
-        e.message = e.message || "Internal Server Error"
-
+    if (e["__HttpError__"]) {
+        e.message = e.message || "Internal Server Error";
+        e.statusCode = e.statusCode || 500;
     } else {
-        e = new InternalServerError();
+        e = new InternalServerError(e);
     }
 
     return e as HttpError;
