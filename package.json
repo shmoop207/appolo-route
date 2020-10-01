@@ -15,7 +15,7 @@
   },
   "scripts": {},
   "main": "./index.js",
-  "version": "8.0.1",
+  "version": "8.0.2",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -24,9 +24,9 @@
   "readme": "",
   "readmeFilename": "README.md",
   "dependencies": {
-    "@appolo/agent": "^8.0.2",
-    "@appolo/engine": "^8.0.7",
-    "@appolo/inject": "^8.0.3",
+    "@appolo/agent": "^8.0.3",
+    "@appolo/engine": "^8.0.8",
+    "@appolo/inject": "^8.0.5",
     "@appolo/utils": "^8.0.0",
     "tslib": "^2.0.1"
   },
