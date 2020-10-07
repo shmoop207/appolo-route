@@ -1,6 +1,6 @@
 "use strict";
 import {IRouteOptions} from "./interfaces/IRouteOptions";
-import {Methods, Hooks} from "@appolo/agent";
+import {Methods, HooksTypes} from "@appolo/agent";
 import {Objects, Arrays} from "@appolo/utils";
 import {IMiddlewareCtr} from "../middleware/IMiddleware";
 import {IController} from "../controller/IController";
@@ -173,10 +173,10 @@ export class Route<T extends IController> {
         return this;
     }
 
-    public addHook(name: Hooks.OnError, ...hook: (string | MiddlewareHandlerErrorOrAny | IMiddlewareCtr)[]): this
-    public addHook(name: Hooks.OnResponse | Hooks.PreMiddleware | Hooks.PreHandler | Hooks.OnRequest, ...hook: (string | MiddlewareHandlerErrorOrAny | IMiddlewareCtr)[]): this
-    public addHook(name: Hooks.OnSend, ...hook: (string | MiddlewareHandlerOrAny | IMiddlewareCtr)[]): this
-    public addHook(name: Hooks, ...hook: (string | MiddlewareHandlerParams | IMiddlewareCtr)[]): this {
+    public addHook(name: HooksTypes.OnError, ...hook: (string | MiddlewareHandlerErrorOrAny | IMiddlewareCtr)[]): this
+    public addHook(name: HooksTypes.OnResponse | HooksTypes.PreMiddleware | HooksTypes.PreHandler | HooksTypes.OnRequest, ...hook: (string | MiddlewareHandlerErrorOrAny | IMiddlewareCtr)[]): this
+    public addHook(name: HooksTypes.OnSend, ...hook: (string | MiddlewareHandlerOrAny | IMiddlewareCtr)[]): this
+    public addHook(name: HooksTypes, ...hook: (string | MiddlewareHandlerParams | IMiddlewareCtr)[]): this {
 
         this._route.hooks[name].push(...hook);
 

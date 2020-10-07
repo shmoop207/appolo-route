@@ -1,5 +1,5 @@
 import {IRouteOptions} from "../routes/interfaces/IRouteOptions";
-import {Hooks, MiddlewareHandlerParams, Request, Response} from "@appolo/agent";
+import {HooksTypes, MiddlewareHandlerParams, Request, Response} from "@appolo/agent";
 import {IMiddlewareCtr, MiddlewareType} from "../middleware/IMiddleware";
 
 import {Util as EngineUtils} from '@appolo/engine';
@@ -42,8 +42,8 @@ export class Helpers  {
         return output
     }
 
-    public static convertMiddlewareHooks(name: Hooks, hooks: (string | MiddlewareHandlerParams | IMiddlewareCtr)[]): MiddlewareHandlerParams[] {
-        return Helpers.convertMiddleware(hooks, name == Hooks.OnSend ? MiddlewareType.Data : name == Hooks.OnError ? MiddlewareType.Error : MiddlewareType.MiddleWare);
+    public static convertMiddlewareHooks(name: HooksTypes, hooks: (string | MiddlewareHandlerParams | IMiddlewareCtr)[]): MiddlewareHandlerParams[] {
+        return Helpers.convertMiddleware(hooks, name == HooksTypes.OnSend ? MiddlewareType.Data : name == HooksTypes.OnError ? MiddlewareType.Error : MiddlewareType.MiddleWare);
 
     }
 

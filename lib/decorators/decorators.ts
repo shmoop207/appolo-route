@@ -1,6 +1,6 @@
 import {Route} from "../routes/route";
 import {
-    Hooks,
+    HooksTypes,
     Methods,
     MiddlewareHandlerErrorOrAny,
     MiddlewareHandlerOrAny,
@@ -113,10 +113,10 @@ export function order(order?: number): (target: any, propertyKey: string, descri
     return defineRouteProperty([{name: "order", args: [order || 0]}])
 }
 
-export function hook(name: Hooks.OnError, ...hook: (string | MiddlewareHandlerErrorOrAny | IMiddlewareCtr)[])
-export function hook(name: Hooks.OnResponse | Hooks.PreMiddleware | Hooks.PreHandler | Hooks.OnRequest, ...hook: (string | MiddlewareHandlerErrorOrAny | IMiddlewareCtr)[])
-export function hook(name: Hooks.OnSend, ...hook: (string | MiddlewareHandlerOrAny | IMiddlewareCtr)[])
-export function hook(name: Hooks, ...hook: (string | MiddlewareHandlerParams | IMiddlewareCtr)[]) {
+export function hook(name: HooksTypes.OnError, ...hook: (string | MiddlewareHandlerErrorOrAny | IMiddlewareCtr)[])
+export function hook(name: HooksTypes.OnResponse | HooksTypes.PreMiddleware | HooksTypes.PreHandler | HooksTypes.OnRequest, ...hook: (string | MiddlewareHandlerErrorOrAny | IMiddlewareCtr)[])
+export function hook(name: HooksTypes.OnSend, ...hook: (string | MiddlewareHandlerOrAny | IMiddlewareCtr)[])
+export function hook(name: HooksTypes, ...hook: (string | MiddlewareHandlerParams | IMiddlewareCtr)[]) {
     return defineRouteProperty([{name: "addHook", args: [name, ...hook]}])
 }
 

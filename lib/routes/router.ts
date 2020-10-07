@@ -1,7 +1,7 @@
 "use strict";
 import {IEnv} from "@appolo/engine";
 import {Injector} from "@appolo/inject";
-import {Agent, Methods, Hooks,MiddlewareHandlerErrorOrAny,MiddlewareHandlerOrAny,MiddlewareHandlerParams} from "@appolo/agent";
+import {Agent, Methods, HooksTypes,MiddlewareHandlerErrorOrAny,MiddlewareHandlerOrAny,MiddlewareHandlerParams} from "@appolo/agent";
 import {IMiddlewareCtr, MiddlewareType} from "../middleware/IMiddleware";
 import {Route} from "./route";
 import {IController} from "../controller/IController";
@@ -135,7 +135,7 @@ export class Router {
         let hooks = {};
         Object.keys(def.hooks || {}).forEach(key => {
             let hook = def.hooks[key];
-            hooks[key] = Helpers.convertMiddlewareHooks(key as Hooks, hook)
+            hooks[key] = Helpers.convertMiddlewareHooks(key as HooksTypes, hook)
         });
 
 
@@ -176,11 +176,11 @@ export class Router {
         return this;
     }
 
-    public addHook(name: Hooks, ...hooks: (string | MiddlewareHandlerParams | IMiddlewareCtr)[]): this {
+    public addHook(name: HooksTypes, ...hooks: (string | MiddlewareHandlerParams | IMiddlewareCtr)[]): this {
 
         hooks = Helpers.convertMiddlewareHooks(name, hooks);
 
-        this._agent.addHook(name as any, ...(hooks as any));
+        this._agent.hooks.addHook(name as any, ...(hooks as any));
 
         return this
     }
