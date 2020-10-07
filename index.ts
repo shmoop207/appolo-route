@@ -12,13 +12,13 @@ import {
     Request,
     Response,
     UnauthorizedError,
-    Hooks,
+    HooksTypes,
 } from "@appolo/agent";
 
 export {
     Util,
-    Hooks,
- }
+    HooksTypes as Hooks,
+}
 export {Route} from './lib/routes/route';
 export {Router} from './lib/routes/router';
 export {Controller} from './lib/controller/controller';

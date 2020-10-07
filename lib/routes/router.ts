@@ -1,7 +1,14 @@
 "use strict";
 import {IEnv} from "@appolo/engine";
 import {Injector} from "@appolo/inject";
-import {Agent, Methods, HooksTypes,MiddlewareHandlerErrorOrAny,MiddlewareHandlerOrAny,MiddlewareHandlerParams} from "@appolo/agent";
+import {
+    Agent,
+    Methods,
+    HooksTypes,
+    MiddlewareHandlerErrorOrAny,
+    MiddlewareHandlerOrAny,
+    MiddlewareHandlerParams
+} from "@appolo/agent";
 import {IMiddlewareCtr, MiddlewareType} from "../middleware/IMiddleware";
 import {Route} from "./route";
 import {IController} from "../controller/IController";
@@ -17,11 +24,12 @@ import {
 } from "../decorators/decorators";
 import {Util} from "../util/util";
 import {Util as EngineUtil} from "@appolo/engine";
-import {Classes,Objects} from '@appolo/utils';
+import {Classes, Objects} from '@appolo/utils';
 import * as path from 'path';
 import {invokeCustomRouteMiddleWare} from "../middleware/middalwares/invokeCustomRouteMiddleWare";
 import {invokeMiddleWareError} from "../middleware/middalwares/invokeMiddleWareError";
 import {invokeMiddleWare} from "../middleware/middalwares/invokeMiddleWare";
+import {Hooks} from "./hooks";
 
 
 export class Router {
@@ -33,17 +41,23 @@ export class Router {
     private _isInitialize = false;
 
     protected _routes: Route<IController>[];
+    private readonly _hooks: Hooks;
 
     constructor(private _env: IEnv, private _injector: Injector, private _agent: Agent) {
 
         this._routes = [];
+        this._hooks = new Hooks(_agent);
+    }
+
+    public get hooks() {
+        return this._hooks;
     }
 
     public initialize() {
 
         this._isInitialize = true;
 
-        this._routes.forEach( route => this._initRoute(route))
+        this._routes.forEach(route => this._initRoute(route))
     }
 
     public getRoute(path: string, method: string): Route<any> {
@@ -60,7 +74,7 @@ export class Router {
         }
     }
 
-    public addRouteFromClass(fn: Function){
+    public addRouteFromClass(fn: Function) {
         if (!Classes.isClass(fn)) {
             return
         }
@@ -144,7 +158,7 @@ export class Router {
         }
     }
 
-    public  addMiddleware(path: string | MiddlewareHandlerErrorOrAny | MiddlewareHandlerOrAny | IMiddlewareCtr, middleware: (string | MiddlewareHandlerErrorOrAny | MiddlewareHandlerOrAny | IMiddlewareCtr)[], error: boolean): this {
+    public addMiddleware(path: string | MiddlewareHandlerErrorOrAny | MiddlewareHandlerOrAny | IMiddlewareCtr, middleware: (string | MiddlewareHandlerErrorOrAny | MiddlewareHandlerOrAny | IMiddlewareCtr)[], error: boolean): this {
 
         if (typeof path !== "string") {
             middleware.unshift(path)
@@ -174,15 +188,6 @@ export class Router {
         }
 
         return this;
-    }
-
-    public addHook(name: HooksTypes, ...hooks: (string | MiddlewareHandlerParams | IMiddlewareCtr)[]): this {
-
-        hooks = Helpers.convertMiddlewareHooks(name, hooks);
-
-        this._agent.hooks.addHook(name as any, ...(hooks as any));
-
-        return this
     }
 
 

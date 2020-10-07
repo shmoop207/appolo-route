@@ -11,7 +11,7 @@ Object.defineProperty(exports, "InternalServerError", { enumerable: true, get: f
 Object.defineProperty(exports, "Methods", { enumerable: true, get: function () { return agent_1.Methods; } });
 Object.defineProperty(exports, "NotFoundError", { enumerable: true, get: function () { return agent_1.NotFoundError; } });
 Object.defineProperty(exports, "UnauthorizedError", { enumerable: true, get: function () { return agent_1.UnauthorizedError; } });
-Object.defineProperty(exports, "Hooks", { enumerable: true, get: function () { return agent_1.Hooks; } });
+Object.defineProperty(exports, "Hooks", { enumerable: true, get: function () { return agent_1.HooksTypes; } });
 var route_1 = require("./lib/routes/route");
 Object.defineProperty(exports, "Route", { enumerable: true, get: function () { return route_1.Route; } });
 var router_1 = require("./lib/routes/router");
