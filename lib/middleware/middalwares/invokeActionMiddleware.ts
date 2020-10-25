@@ -2,7 +2,6 @@ import {IRequest} from "../../routes/interfaces/IRequest";
 import {IResponse} from "../../routes/interfaces/IResponse";
 import {HttpError, InternalServerError, NextFn} from "@appolo/agent";
 import {StaticController} from "../../controller/staticController";
-import {IMiddleware} from "../common/interfaces/IMiddleware";
 import {Strings} from '@appolo/utils';
 import {handleMiddlewareError} from "./invokeMiddleWare";
 import {Reflector} from "@appolo/utils/index";

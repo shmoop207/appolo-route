@@ -2,7 +2,6 @@
 import {IRouteOptions} from "./interfaces/IRouteOptions";
 import {Methods, HooksTypes} from "@appolo/agent";
 import {Objects, Arrays} from "@appolo/utils";
-import {IMiddlewareCtr} from "../middleware/common/interfaces/IMiddleware";
 import {IController} from "../controller/IController";
 import {MiddlewareHandlerErrorOrAny, MiddlewareHandlerOrAny, MiddlewareHandlerParams} from "@appolo/agent";
 import {Controller} from "../controller/controller";
@@ -11,6 +10,8 @@ import {IRequest} from "./interfaces/IRequest";
 import {IResponse} from "./interfaces/IResponse";
 import {Util} from "../util/util";
 import {Util as EngineUtils} from "@appolo/engine";
+import {StaticMiddleware} from "../middleware/staticMiddleware";
+import {Middleware} from "../middleware/middleware";
 
 let orderIndex = 0;
 
@@ -133,16 +134,16 @@ export class Route<T extends IController> {
     }
 
 
-    public error(middleware: string | MiddlewareHandlerErrorOrAny | IMiddlewareCtr, order: "head" | "tail" = "tail"): this {
+    public error(middleware: string | MiddlewareHandlerErrorOrAny | typeof Middleware | typeof StaticMiddleware, order: "head" | "tail" = "tail"): this {
         return this._addMiddleware(middleware, order, true)
     }
 
-    public middleware(middleware: string | MiddlewareHandlerOrAny | IMiddlewareCtr, order: "head" | "tail" = "tail"): this {
+    public middleware(middleware: string | MiddlewareHandlerOrAny | typeof Middleware | typeof StaticMiddleware, order: "head" | "tail" = "tail"): this {
 
         return this._addMiddleware(middleware, order, false)
     }
 
-    private _addMiddleware(middleware: (string | MiddlewareHandlerParams | IMiddlewareCtr), order: "head" | "tail" = "tail", error = false): this {
+    private _addMiddleware(middleware: (string | MiddlewareHandlerParams |  typeof Middleware | typeof StaticMiddleware), order: "head" | "tail" = "tail", error = false): this {
         let arrMethod = order == "head" ? "unshift" : "push";
         //
         if (Array.isArray(middleware)) {
@@ -166,17 +167,17 @@ export class Route<T extends IController> {
         return this;
     }
 
-    public middlewares(middlewares: string[] | MiddlewareHandlerOrAny[] | IMiddlewareCtr[], order: "head" | "tail" = "tail"): this {
+    public middlewares(middlewares: string[] | MiddlewareHandlerOrAny[] |  (typeof StaticMiddleware | typeof Middleware)[], order: "head" | "tail" = "tail"): this {
 
         Arrays.arrayify(middlewares).forEach(fn => this.middleware(fn as any, order));
 
         return this;
     }
 
-    public addHook(name: HooksTypes.OnError, ...hook: (string | MiddlewareHandlerErrorOrAny | IMiddlewareCtr)[]): this
-    public addHook(name: HooksTypes.OnResponse | HooksTypes.PreMiddleware | HooksTypes.PreHandler | HooksTypes.OnRequest, ...hook: (string | MiddlewareHandlerErrorOrAny | IMiddlewareCtr)[]): this
-    public addHook(name: HooksTypes.OnSend, ...hook: (string | MiddlewareHandlerOrAny | IMiddlewareCtr)[]): this
-    public addHook(name: HooksTypes, ...hook: (string | MiddlewareHandlerParams | IMiddlewareCtr)[]): this {
+    public addHook(name: HooksTypes.OnError, ...hook: (string | MiddlewareHandlerErrorOrAny |   typeof StaticMiddleware | typeof Middleware)[]): this
+    public addHook(name: HooksTypes.OnResponse | HooksTypes.PreMiddleware | HooksTypes.PreHandler | HooksTypes.OnRequest, ...hook: (string | MiddlewareHandlerErrorOrAny |   typeof StaticMiddleware | typeof Middleware)[]): this
+    public addHook(name: HooksTypes.OnSend, ...hook: (string | MiddlewareHandlerOrAny |   typeof StaticMiddleware | typeof Middleware)[]): this
+    public addHook(name: HooksTypes, ...hook: (string | MiddlewareHandlerParams |   typeof StaticMiddleware | typeof Middleware)[]): this {
 
         this._route.hooks[name].push(...hook);
 

@@ -1,12 +1,13 @@
 import {IRouteOptions} from "../routes/interfaces/IRouteOptions";
 import {HooksTypes, MiddlewareHandlerParams, Request, Response} from "@appolo/agent";
-import {IMiddlewareCtr} from "../middleware/common/interfaces/IMiddleware";
 
 import {Util as EngineUtils} from '@appolo/engine';
 import {invokeMiddleWare} from "../middleware/middalwares/invokeMiddleWare";
 import {invokeMiddleWareError} from "../middleware/middalwares/invokeMiddleWareError";
 import {invokeMiddleWareData} from "../middleware/middalwares/invokeMiddleWareData";
 import {MiddlewareType} from "../middleware/common/enums/enums";
+import {Middleware} from "../middleware/middleware";
+import {StaticMiddleware} from "../middleware/staticMiddleware";
 
 export class Helpers  {
 
@@ -23,7 +24,7 @@ export class Helpers  {
         });
     }
 
-    public static convertMiddleware(middleware: (string | MiddlewareHandlerParams | IMiddlewareCtr)[], type: MiddlewareType): MiddlewareHandlerParams[] {
+    public static convertMiddleware(middleware: (string | MiddlewareHandlerParams |  typeof StaticMiddleware| typeof Middleware)[], type: MiddlewareType): MiddlewareHandlerParams[] {
 
         let output: MiddlewareHandlerParams[] = [];
 
@@ -43,7 +44,7 @@ export class Helpers  {
         return output
     }
 
-    public static convertMiddlewareHooks(name: HooksTypes, hooks: (string | MiddlewareHandlerParams | IMiddlewareCtr)[]): MiddlewareHandlerParams[] {
+    public static convertMiddlewareHooks(name: HooksTypes, hooks: (string | MiddlewareHandlerParams | typeof StaticMiddleware| typeof Middleware)[]): MiddlewareHandlerParams[] {
         return Helpers.convertMiddleware(hooks, name == HooksTypes.OnSend ? MiddlewareType.Data : name == HooksTypes.OnError ? MiddlewareType.Error : MiddlewareType.MiddleWare);
 
     }

@@ -24,7 +24,6 @@ export {Router} from './lib/routes/router';
 export {Controller} from './lib/controller/controller';
 export {StaticController} from './lib/controller/staticController';
 export {IController} from './lib/controller/IController';
-export {IMiddlewareCtr} from './lib/middleware/common/interfaces/IMiddleware';
 export * from './lib/decorators/decorators'
 
 export {Middleware} from './lib/middleware/middleware';

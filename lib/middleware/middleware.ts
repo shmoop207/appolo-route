@@ -3,10 +3,9 @@ import {IRouteOptions} from "../routes/interfaces/IRouteOptions";
 import {BadRequestError, HttpError, InternalServerError, NextFn, NotFoundError, UnauthorizedError} from "@appolo/agent";
 import {IRequest} from "../routes/interfaces/IRequest";
 import {IResponse} from "../routes/interfaces/IResponse";
-import {IMiddleware} from "./common/interfaces/IMiddleware";
 
 
-export abstract class Middleware implements IMiddleware {
+export abstract class Middleware {
 
     protected req: IRequest;
     protected res: IResponse;

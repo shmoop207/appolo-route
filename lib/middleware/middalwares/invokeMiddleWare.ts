@@ -1,13 +1,13 @@
 import {IRequest} from "../../routes/interfaces/IRequest";
 import {IResponse} from "../../routes/interfaces/IResponse";
 import {HttpError, InternalServerError, NextFn} from "@appolo/agent/index";
-import {IMiddleware} from "../common/interfaces/IMiddleware";
 import {getCustomParamsArgs} from "./getCustomParamsArgs";
+import {Middleware} from "../middleware";
 
 export function invokeMiddleWare(middlewareId: string) {
 
     return function (req: IRequest, res: IResponse, next: NextFn) {
-        let middleware: IMiddleware = req.app.injector.getObject<IMiddleware>(middlewareId, [req, res, next, req.route]);
+        let middleware:  Middleware = req.app.injector.getObject<Middleware>(middlewareId, [req, res, next, req.route]);
 
         if (!middleware) {
             return next(new HttpError(500, `failed to find middleware ${middlewareId}`));

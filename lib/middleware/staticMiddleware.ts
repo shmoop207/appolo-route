@@ -1,12 +1,11 @@
 "use strict";
 
 import {IRouteOptions} from "../routes/interfaces/IRouteOptions";
-import {IMiddleware} from "./common/interfaces/IMiddleware";
 import {HttpError, IRequest, IResponse, NextFn} from "@appolo/agent";
 import {BadRequestError, InternalServerError, NotFoundError, UnauthorizedError} from "@appolo/agent";
 
 
-export abstract class StaticMiddleware implements IMiddleware {
+export abstract class StaticMiddleware  {
 
 
     public run(...params:any[])

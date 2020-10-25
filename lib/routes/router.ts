@@ -9,7 +9,6 @@ import {
     MiddlewareHandlerOrAny,
     MiddlewareHandlerParams
 } from "@appolo/agent";
-import {IMiddlewareCtr} from "../middleware/common/interfaces/IMiddleware";
 import {Route} from "./route";
 import {IController} from "../controller/IController";
 
@@ -33,6 +32,8 @@ import {invokeMiddleWare} from "../middleware/middalwares/invokeMiddleWare";
 import {Hooks} from "./hooks";
 import {Event, IEvent} from "@appolo/events";
 import {MiddlewareType} from "../middleware/common/enums/enums";
+import {StaticMiddleware} from "../middleware/staticMiddleware";
+import {Middleware} from "../middleware/middleware";
 
 
 export class Router {
@@ -141,7 +142,7 @@ export class Router {
         def.$initialized = true;
 
         //check if we have valid path
-        if (!def.path.length || !def.action || (def.environments.length && def.environments.indexOf(this._env.name || this._env.type) == -1)) {
+        if (!def.path.length || !def.action || (def.environments.length && def.environments.indexOf((this._env as any).name || this._env.type) == -1)) {
             return;
         }
 
@@ -169,7 +170,7 @@ export class Router {
         }
     }
 
-    public addMiddleware(path: string | MiddlewareHandlerErrorOrAny | MiddlewareHandlerOrAny | IMiddlewareCtr, middleware: (string | MiddlewareHandlerErrorOrAny | MiddlewareHandlerOrAny | IMiddlewareCtr)[], error: boolean): this {
+    public addMiddleware(path: string | MiddlewareHandlerErrorOrAny | MiddlewareHandlerOrAny |  typeof StaticMiddleware| typeof Middleware, middleware: (string | MiddlewareHandlerErrorOrAny | MiddlewareHandlerOrAny | typeof StaticMiddleware| typeof Middleware)[], error: boolean): this {
 
         if (typeof path !== "string") {
             middleware.unshift(path)

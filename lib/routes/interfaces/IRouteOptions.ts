@@ -1,9 +1,10 @@
 import {IController} from "../../controller/IController";
-import {IMiddlewareCtr} from "../../middleware/common/interfaces/IMiddleware";
 import {Methods, MiddlewareHandlerParams,NextFn} from "@appolo/agent";
 import {IDefinition} from "@appolo/inject";
 import {IRequest} from "./IRequest";
 import {IResponse} from "./IResponse";
+import {StaticMiddleware} from "../../middleware/staticMiddleware";
+import {Middleware} from "../../middleware/middleware";
 
 
 export interface IRouteOptions {
@@ -11,8 +12,8 @@ export interface IRouteOptions {
     action?: ((c: IController) => Function) | string
     environments?: string[]
     roles?: string[]
-    middleware?: (string | MiddlewareHandlerParams | IMiddlewareCtr)[]
-    middlewareError?: (string | MiddlewareHandlerParams | IMiddlewareCtr)[]
+    middleware?: (string | MiddlewareHandlerParams | typeof StaticMiddleware | typeof Middleware)[]
+    middlewareError?: (string | MiddlewareHandlerParams |  typeof StaticMiddleware | typeof Middleware)[]
     path?: string[]
     abstract?: boolean,
     method?: Methods[]
@@ -28,12 +29,12 @@ export interface IRouteOptions {
     statusCode: number
     gzip: boolean,
     hooks:  {
-        preHandler: (string | MiddlewareHandlerParams | IMiddlewareCtr)[],
-        preMiddleware: (string | MiddlewareHandlerParams | IMiddlewareCtr)[],
-        onResponse: (string | MiddlewareHandlerParams | IMiddlewareCtr)[],
-        onRequest: (string | MiddlewareHandlerParams | IMiddlewareCtr)[],
-        onError: (string | MiddlewareHandlerParams | IMiddlewareCtr)[],
-        onSend: (string | MiddlewareHandlerParams | IMiddlewareCtr)[]
+        preHandler: (string | MiddlewareHandlerParams |  typeof StaticMiddleware | typeof Middleware)[],
+        preMiddleware: (string | MiddlewareHandlerParams |  typeof StaticMiddleware | typeof Middleware)[],
+        onResponse: (string | MiddlewareHandlerParams |  typeof StaticMiddleware | typeof Middleware)[],
+        onRequest: (string | MiddlewareHandlerParams |  typeof StaticMiddleware | typeof Middleware)[],
+        onError: (string | MiddlewareHandlerParams |  typeof StaticMiddleware | typeof Middleware)[],
+        onSend: (string | MiddlewareHandlerParams |  typeof StaticMiddleware | typeof Middleware)[]
     }
 
 
