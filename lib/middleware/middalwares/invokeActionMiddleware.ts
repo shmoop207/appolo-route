@@ -2,9 +2,12 @@ import {IRequest} from "../../routes/interfaces/IRequest";
 import {IResponse} from "../../routes/interfaces/IResponse";
 import {HttpError, InternalServerError, NextFn} from "@appolo/agent";
 import {StaticController} from "../../controller/staticController";
-import {IMiddleware} from "../IMiddleware";
+import {IMiddleware} from "../common/interfaces/IMiddleware";
 import {Strings} from '@appolo/utils';
-import { handleMiddlewareError} from "./invokeMiddleWare";
+import {handleMiddlewareError} from "./invokeMiddleWare";
+import {Reflector} from "@appolo/utils/index";
+import {RouteCustomParamSymbol} from "../../decorators/decorators";
+import {getCustomParamsArgs} from "./getCustomParamsArgs";
 
 export function invokeActionMiddleware(req: IRequest, res: IResponse, next: NextFn) {
 
@@ -33,21 +36,11 @@ export function invokeActionMiddleware(req: IRequest, res: IResponse, next: Next
 
     try {
 
+        let result, args: any[] = [req, res, route], fn = controller[fnName], customRouteParam = fn.customRouteParam;
 
-        let result;
+        args = getCustomParamsArgs(fn, args, controller, fnName, req, res, next);
 
-        if (route.customRouteParam.length) {
-            let args = [req, res, req.model, route];
-            for (let i = 0, len = route.customRouteParam.length; i < len; i++) {
-                let data = route.customRouteParam[i];
-                args.splice(data.index, 0, data.fn(req, res, req.route));
-            }
-
-            result = controller[fnName].apply(controller, args);
-        } else {
-            result = controller[fnName](req, res, req.model, route);
-        }
-
+        result = fn.apply(controller, args);
 
         if (res.headersSent || res.sending) {
             return;

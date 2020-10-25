@@ -1,11 +1,12 @@
 import {IRouteOptions} from "../routes/interfaces/IRouteOptions";
 import {HooksTypes, MiddlewareHandlerParams, Request, Response} from "@appolo/agent";
-import {IMiddlewareCtr, MiddlewareType} from "../middleware/IMiddleware";
+import {IMiddlewareCtr} from "../middleware/common/interfaces/IMiddleware";
 
 import {Util as EngineUtils} from '@appolo/engine';
 import {invokeMiddleWare} from "../middleware/middalwares/invokeMiddleWare";
 import {invokeMiddleWareError} from "../middleware/middalwares/invokeMiddleWareError";
 import {invokeMiddleWareData} from "../middleware/middalwares/invokeMiddleWareData";
+import {MiddlewareType} from "../middleware/common/enums/enums";
 
 export class Helpers  {
 

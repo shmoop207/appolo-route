@@ -2,7 +2,7 @@
 import {IRouteOptions} from "./interfaces/IRouteOptions";
 import {Methods, HooksTypes} from "@appolo/agent";
 import {Objects, Arrays} from "@appolo/utils";
-import {IMiddlewareCtr} from "../middleware/IMiddleware";
+import {IMiddlewareCtr} from "../middleware/common/interfaces/IMiddleware";
 import {IController} from "../controller/IController";
 import {MiddlewareHandlerErrorOrAny, MiddlewareHandlerOrAny, MiddlewareHandlerParams} from "@appolo/agent";
 import {Controller} from "../controller/controller";

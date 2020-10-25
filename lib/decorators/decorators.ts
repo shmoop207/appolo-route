@@ -4,22 +4,24 @@ import {
     Methods,
     MiddlewareHandlerErrorOrAny,
     MiddlewareHandlerOrAny,
-    MiddlewareHandlerParams
+    MiddlewareHandlerParams, NextFn
 } from "@appolo/agent";
 import {define} from "@appolo/inject";
-import {Arrays, Reflector} from "@appolo/utils";
-import {IMiddlewareCtr} from "../middleware/IMiddleware";
+import {Arrays, Reflector, Functions, Classes} from "@appolo/utils";
+import {IMiddlewareCtr} from "../middleware/common/interfaces/IMiddleware";
 import {IRouteOptions} from "../routes/interfaces/IRouteOptions";
 import {IController} from "../controller/IController";
 import {IRequest} from "../routes/interfaces/IRequest";
 import {IResponse} from "../routes/interfaces/IResponse";
 import {Helpers} from "../util/helpers";
+import {Util} from "../../index";
 
 export const RouterDefinitionsSymbol = "__RouterDefinitions__";
 export const RouterDefinitionsCompiledSymbol = "__RouterDefinitionsCompiled__";
 export const RouterDefinitionsClassSymbol = "__RouterDefinitionsClass__";
 export const RouterModelSymbol = "__RouterModelDefinitions__";
 export const RouterControllerSymbol = "__RouterControllerDefinitions__";
+export const RouteCustomParamSymbol = "__RouteCustomParamSymbol__";
 
 function defineRouteClass(params: { name: string, args: any[] }[], target: any): void {
 
@@ -32,7 +34,7 @@ function defineRouteClass(params: { name: string, args: any[] }[], target: any):
         route[param.name].apply(route, param.args)
     });
 
-    Reflector.setMetadata(RouterDefinitionsClassSymbol,route , target);
+    Reflector.setMetadata(RouterDefinitionsClassSymbol, route, target);
 
 }
 
@@ -65,7 +67,7 @@ function defineRouteProperty(params: { name: string, args: any[] }[]): (target: 
             data[propertyKey] = route = new Route<IController>(target.constructor);
             route.action(propertyKey);
         } else {
-            route =  data[propertyKey] = route.clone();
+            route = data[propertyKey] = route.clone();
         }
 
         (params || []).forEach(param => {
@@ -171,10 +173,15 @@ export function customRouteDecorator(fn: ((req: IRequest, res: IResponse, route:
     return defineRouteProperty([{name: "customRouteFn", args: [fn]}])
 }
 
-export function customRouteParam(fn: ((req: IRequest, res: IResponse, route: IRouteOptions) => void)) {
+export function customRouteParam(fn: ((req: IRequest, res: IResponse, route: IRouteOptions, next: NextFn) => void)) {
 
-    return function (target: Object, propertyKey: string, parameterIndex: number) {
-        defineRouteProperty([{name: "customRouteParam", args: [parameterIndex, fn]}])(target, propertyKey)
+    return function (target: Function, propertyKey: string, index: number) {
+        let data = Reflector.getMetadata<{ index: number, fn: Function }[]>(RouteCustomParamSymbol, target.constructor, propertyKey, [])
+
+        data.unshift({
+            index,
+            fn
+        })
     }
 }
 
@@ -213,6 +220,21 @@ export let params = function (param?: string) {
     })
 };
 
+export let param = function () {
+
+    return function (target: Function, propertyKey: string, index: number) {
+
+        let names = Classes.functionArgsNames(target[propertyKey])
+        let param = names[index];
+
+        customRouteParam(function (req: IRequest) {
+            return param != undefined ? req.params[param] : req.params
+        })(target, propertyKey, index);
+    }
+
+
+};
+
 export let req = function () {
     return customRouteParam(function (req: IRequest) {
         return req
@@ -222,6 +244,12 @@ export let req = function () {
 export let res = function () {
     return customRouteParam(function (req: IRequest, res: IResponse) {
         return res
+    })
+};
+
+export let next = function () {
+    return customRouteParam(function (req: IRequest, res: IResponse, route: IRouteOptions, next: NextFn) {
+        return next
     })
 };
 

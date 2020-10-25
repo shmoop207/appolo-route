@@ -1,7 +1,8 @@
 import {IRequest} from "../../routes/interfaces/IRequest";
 import {IResponse} from "../../routes/interfaces/IResponse";
 import {HttpError, InternalServerError, NextFn} from "@appolo/agent/index";
-import {IMiddleware} from "../IMiddleware";
+import {IMiddleware} from "../common/interfaces/IMiddleware";
+import {getCustomParamsArgs} from "./getCustomParamsArgs";
 
 export function invokeMiddleWare(middlewareId: string) {
 
@@ -11,8 +12,11 @@ export function invokeMiddleWare(middlewareId: string) {
         if (!middleware) {
             return next(new HttpError(500, `failed to find middleware ${middlewareId}`));
         }
+        let args = [req, res, next, req.route],fn = middleware.run
 
-        let result = middleware.run(req, res, next, req.route);
+        args = getCustomParamsArgs(fn, args, middleware, "run", req, res, next);
+
+        let result = fn.apply(middleware,args);
 
         if (res.headersSent || res.sending || middleware.run.length > 2) {
             return;

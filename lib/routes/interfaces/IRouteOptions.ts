@@ -1,6 +1,6 @@
 import {IController} from "../../controller/IController";
-import {IMiddlewareCtr} from "../../middleware/IMiddleware";
-import {Methods, MiddlewareHandlerParams} from "@appolo/agent";
+import {IMiddlewareCtr} from "../../middleware/common/interfaces/IMiddleware";
+import {Methods, MiddlewareHandlerParams,NextFn} from "@appolo/agent";
 import {IDefinition} from "@appolo/inject";
 import {IRequest} from "./IRequest";
 import {IResponse} from "./IResponse";
@@ -24,7 +24,7 @@ export interface IRouteOptions {
     $initialized?: boolean
     headers: { key: string, value: string }[]
     customRouteFn: ((req: IRequest, res: IResponse, route: IRouteOptions) => void)[]
-    customRouteParam: ({ index: number, fn: (req: IRequest,res: IResponse, route: IRouteOptions) => any })[]
+    customRouteParam: ({ index: number, fn: (req: IRequest,res: IResponse, route: IRouteOptions,next:NextFn) => any })[]
     statusCode: number
     gzip: boolean,
     hooks:  {

@@ -9,7 +9,7 @@ import {
     MiddlewareHandlerOrAny,
     MiddlewareHandlerParams
 } from "@appolo/agent";
-import {IMiddlewareCtr, MiddlewareType} from "../middleware/IMiddleware";
+import {IMiddlewareCtr} from "../middleware/common/interfaces/IMiddleware";
 import {Route} from "./route";
 import {IController} from "../controller/IController";
 
@@ -18,6 +18,7 @@ import {
     invokeActionMiddleware,
 } from "../middleware/middalwares/invokeActionMiddleware";
 import {
+    RouteCustomParamSymbol,
     RouterControllerSymbol, RouterDefinitionsClassSymbol,
     RouterDefinitionsCompiledSymbol,
     RouterDefinitionsSymbol
@@ -30,6 +31,8 @@ import {invokeCustomRouteMiddleWare} from "../middleware/middalwares/invokeCusto
 import {invokeMiddleWareError} from "../middleware/middalwares/invokeMiddleWareError";
 import {invokeMiddleWare} from "../middleware/middalwares/invokeMiddleWare";
 import {Hooks} from "./hooks";
+import {Event, IEvent} from "@appolo/events";
+import {MiddlewareType} from "../middleware/common/enums/enums";
 
 
 export class Router {
@@ -42,6 +45,8 @@ export class Router {
 
     protected _routes: Route<IController>[];
     private readonly _hooks: Hooks;
+
+    private _onRouteAddedEvent: Event<{ route: Route<IController> }> = new Event()
 
     constructor(private _env: IEnv, private _injector: Injector, private _agent: Agent) {
 
@@ -65,9 +70,16 @@ export class Router {
 
     }
 
+    public onRouteAddedEvent(): IEvent<{ route: Route<IController> }> {
+        return this._onRouteAddedEvent;
+    }
+
     public addRoute(route: Route<IController>) {
 
         this._routes.push(route);
+
+
+        this._onRouteAddedEvent.fireEvent({route})
 
         if (this._isInitialize) {
             setImmediate(() => this._initRoute(route))
@@ -142,7 +154,6 @@ export class Router {
         if (def.gzip || def.statusCode || def.headers.length || def.customRouteFn.length) {
             middewares.unshift(invokeCustomRouteMiddleWare);
         }
-
 
         middewares.push(invokeActionMiddleware);
 

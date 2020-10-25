@@ -1,7 +1,7 @@
 "use strict";
 
 import {IRouteOptions} from "../routes/interfaces/IRouteOptions";
-import {IMiddleware} from "./IMiddleware";
+import {IMiddleware} from "./common/interfaces/IMiddleware";
 import {HttpError, IRequest, IResponse, NextFn} from "@appolo/agent";
 import {BadRequestError, InternalServerError, NotFoundError, UnauthorizedError} from "@appolo/agent";
 
@@ -9,18 +9,15 @@ import {BadRequestError, InternalServerError, NotFoundError, UnauthorizedError} 
 export abstract class StaticMiddleware implements IMiddleware {
 
 
-    public getModel<T>(req?: IRequest): T {
-        return (req).model as T;
-    }
-
+    public run(...params:any[])
     public  run(req: IRequest, res: IResponse, next: NextFn, route: IRouteOptions): void{
         next();
     }
-
+    public catch(...params: any[])
     public  catch(err,req: IRequest, res: IResponse, next: NextFn, route: IRouteOptions): void{
         next(err);
     }
-
+    public runWithData(...params:any[])
     public  runWithData(data,req: IRequest, res: IResponse, next: NextFn, route: IRouteOptions): void{
         next(null,data);
     }
@@ -50,5 +47,9 @@ export abstract class StaticMiddleware implements IMiddleware {
 
 
         next(e);
+    }
+
+    public getModel<T>(req: IRequest): T {
+        return Object.assign({}, req.body || {}, req.query || {}, req.params || {}) as T
     }
 }

@@ -3,10 +3,10 @@ import {IRouteOptions} from "../routes/interfaces/IRouteOptions";
 import {BadRequestError, HttpError, InternalServerError, NextFn, NotFoundError, UnauthorizedError} from "@appolo/agent";
 import {IRequest} from "../routes/interfaces/IRequest";
 import {IResponse} from "../routes/interfaces/IResponse";
-import {IMiddleware} from "./IMiddleware";
+import {IMiddleware} from "./common/interfaces/IMiddleware";
 
 
-export abstract class Middleware implements IMiddleware{
+export abstract class Middleware implements IMiddleware {
 
     protected req: IRequest;
     protected res: IResponse;
@@ -21,16 +21,19 @@ export abstract class Middleware implements IMiddleware{
         this.route = route;
     }
 
-    public  run(req: IRequest, res: IResponse, next: NextFn, route: IRouteOptions): void{
+    public run(...params: any[])
+    public run(req: IRequest, res: IResponse, next: NextFn, route: IRouteOptions): void {
         next();
     }
 
-    public  catch(err,req: IRequest, res: IResponse, next: NextFn, route: IRouteOptions): void{
+    public catch(...params: any[])
+    public catch(err, req: IRequest, res: IResponse, next: NextFn, route: IRouteOptions): void {
         next(err);
     }
 
-    public  runWithData(data:any,req: IRequest, res: IResponse, next: NextFn, route: IRouteOptions): void{
-        next(null,data);
+    public runWithData(...params: any[])
+    public runWithData(data: any, req: IRequest, res: IResponse, next: NextFn, route: IRouteOptions): void {
+        next(null, data);
     }
 
     public sendError(error?: Error | string, code?: number): void {
@@ -58,6 +61,10 @@ export abstract class Middleware implements IMiddleware{
 
 
         this.next(e);
+    }
+
+    public getModel<T>(): T {
+        return Object.assign({}, this.req.body || {}, this.req.query || {}, this.req.params || {}) as T
     }
 
 }

@@ -3,7 +3,7 @@ import {
 } from "@appolo/agent";
 import {Enums} from "@appolo/utils/index";
 import {MiddlewareHandlerErrorOrAny, MiddlewareHandlerOrAny, MiddlewareHandlerParams} from "@appolo/agent/index";
-import {IMiddlewareCtr} from "../middleware/IMiddleware";
+import {IMiddlewareCtr} from "../middleware/common/interfaces/IMiddleware";
 import {Helpers} from "../util/helpers";
 
 export class Hooks {

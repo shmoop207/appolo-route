@@ -57,6 +57,8 @@ export abstract class Controller implements IController {
     }
 
     public getModel<T>(): T {
-        return (this.req as any).model;
+        return Object.assign({}, this.req.body || {}, this.req.query || {}, this.req.params || {}) as T
     }
+
+
 }
