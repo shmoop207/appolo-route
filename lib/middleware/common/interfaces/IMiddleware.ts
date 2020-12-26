@@ -1,27 +1,10 @@
-import {IRouteOptions} from "../../../routes/interfaces/IRouteOptions";
-import {NextFn} from "@appolo/agent";
-import {IRequest} from "../../../routes/interfaces/IRequest";
-import {IResponse} from "../../../routes/interfaces/IResponse";
+import {StaticMiddleware} from "../../staticMiddleware";
+import {Middleware} from "../../middleware";
+import {MiddlewareHandlerParams} from "@appolo/agent/index";
 
-
-// export interface IMiddleware {
-//     run?(req?: IRequest, res?: IResponse, next?: NextFn, route?: IRouteOptions)
-//     run?(...params:any[])
-//
-//
-//     catch?(e: any, req: IRequest, res?: IResponse, next?: NextFn, route?: IRouteOptions)
-//     catch?(...params:any[])
-//
-//     runWithData?(data?: any, req?: IRequest, res?: IResponse, next?: NextFn, route?: IRouteOptions)
-//     runWithData?(...params:any[])
-//
-// }
-//
-//
-// export interface IMiddlewareCtr {
-//     new(...args: any[]): IMiddleware
-// }
-//
-//
+export type MiddlewareType = typeof StaticMiddleware | typeof Middleware;
+export type MiddlewareContext ={ type: MiddlewareType, context: { [index: string]: any } }
+export type MiddlewareTypeAndContext = MiddlewareType | MiddlewareContext
+export type MiddlewareParams =  string | MiddlewareHandlerParams | MiddlewareTypeAndContext
 
 

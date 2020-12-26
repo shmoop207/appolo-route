@@ -12,6 +12,10 @@ export abstract class Middleware {
     protected next: NextFn;
     protected route: IRouteOptions;
 
+    public static for(context: { [index: string]: any }) {
+        return {type: this, context}
+    }
+
     constructor(req: IRequest, res: IResponse, next: NextFn, route: IRouteOptions) {
 
         this.req = req;

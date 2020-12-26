@@ -7,13 +7,14 @@ import {
     MiddlewareHandlerParams, NextFn
 } from "@appolo/agent";
 import {define} from "@appolo/inject";
-import {Arrays, Reflector, Functions, Classes} from "@appolo/utils";
+import {Arrays, Reflector, Functions, Classes, Objects} from "@appolo/utils";
 import {IRouteOptions} from "../routes/interfaces/IRouteOptions";
 import {IController} from "../controller/IController";
 import {IRequest} from "../routes/interfaces/IRequest";
 import {IResponse} from "../routes/interfaces/IResponse";
 import {Helpers} from "../util/helpers";
 import {Middleware, StaticMiddleware, Util} from "../../index";
+import {MiddlewareTypeAndContext} from "../middleware/common/interfaces/IMiddleware";
 
 export const RouterDefinitionsSymbol = "__RouterDefinitions__";
 export const RouterDefinitionsCompiledSymbol = "__RouterDefinitionsCompiled__";
@@ -21,6 +22,7 @@ export const RouterDefinitionsClassSymbol = "__RouterDefinitionsClass__";
 export const RouterModelSymbol = "__RouterModelDefinitions__";
 export const RouterControllerSymbol = "__RouterControllerDefinitions__";
 export const RouteCustomParamSymbol = "__RouteCustomParamSymbol__";
+
 
 function defineRouteClass(params: { name: string, args: any[] }[], target: any): void {
 
@@ -114,30 +116,32 @@ export function order(order?: number): (target: any, propertyKey: string, descri
     return defineRouteProperty([{name: "order", args: [order || 0]}])
 }
 
-export function hook(name: HooksTypes.OnError, ...hook: (string | MiddlewareHandlerErrorOrAny |  typeof StaticMiddleware| typeof Middleware)[])
-export function hook(name: HooksTypes.OnResponse | HooksTypes.PreMiddleware | HooksTypes.PreHandler | HooksTypes.OnRequest, ...hook: (string | MiddlewareHandlerErrorOrAny |  typeof StaticMiddleware| typeof Middleware)[])
-export function hook(name: HooksTypes.OnSend, ...hook: (string | MiddlewareHandlerOrAny |  typeof StaticMiddleware| typeof Middleware)[])
-export function hook(name: HooksTypes, ...hook: (string | MiddlewareHandlerParams |  typeof StaticMiddleware| typeof Middleware)[]) {
+export function hook(name: HooksTypes.OnError, ...hook: (string | MiddlewareHandlerErrorOrAny | typeof StaticMiddleware | typeof Middleware)[])
+export function hook(name: HooksTypes.OnResponse | HooksTypes.PreMiddleware | HooksTypes.PreHandler | HooksTypes.OnRequest, ...hook: (string | MiddlewareHandlerErrorOrAny | typeof StaticMiddleware | typeof Middleware)[])
+export function hook(name: HooksTypes.OnSend, ...hook: (string | MiddlewareHandlerOrAny | typeof StaticMiddleware | typeof Middleware)[])
+export function hook(name: HooksTypes, ...hook: (string | MiddlewareHandlerParams | typeof StaticMiddleware | typeof Middleware)[]) {
     return defineRouteProperty([{name: "addHook", args: [name, ...hook]}])
 }
 
 
-export function middleware(middleware: string | string[] | MiddlewareHandlerOrAny | MiddlewareHandlerOrAny[] | typeof StaticMiddleware| typeof Middleware | (typeof StaticMiddleware| typeof Middleware)[]): any {
+export function middleware(middleware: string | string[] | MiddlewareHandlerOrAny | MiddlewareHandlerOrAny[] | MiddlewareTypeAndContext | (MiddlewareTypeAndContext)[], context?: { [index: string]: any }): any {
 
     if (Array.isArray(middleware)) {
         middleware = Arrays.clone(middleware as string[]).reverse()
     }
 
-    return defineRouteProperty([{name: "middleware", args: [middleware, "head"]}])
+    return defineRouteProperty([{name: "middleware", args: [middleware,context, "head"]}])
+
+
 }
 
-export function error(middleware: string | string[] | MiddlewareHandlerErrorOrAny | MiddlewareHandlerErrorOrAny[] | typeof StaticMiddleware| typeof Middleware | (typeof StaticMiddleware| typeof Middleware)[]): any {
+export function error(middleware: string | string[] | MiddlewareHandlerErrorOrAny | MiddlewareHandlerErrorOrAny[] | typeof StaticMiddleware | typeof Middleware | (typeof StaticMiddleware | typeof Middleware)[], context?: { [index: string]: any }): any {
 
     if (Array.isArray(middleware)) {
         middleware = Arrays.clone(middleware as string[]).reverse()
     }
 
-    return defineRouteProperty([{name: "error", args: [middleware, "head"]}])
+    return defineRouteProperty([{name: "error", args: [middleware,context, "head"]}])
 }
 
 
@@ -165,6 +169,12 @@ export function header(key: string, value: string) {
 
 export function statusCode(code: number) {
     return defineRouteProperty([{name: "statusCode", args: [code]}])
+}
+
+export function cacheControl(seconds: number) {
+    return customRouteDecorator((req, res) => {
+        res.cache(seconds);
+    })
 }
 
 
@@ -209,7 +219,7 @@ export let model = function (param?: string) {
         let model = Object.assign({}, req.body || {}, req.query || {}, req.params || {});
 
 
-        return param != undefined ?model[param] : model
+        return param != undefined ? model[param] : model
     })
 };
 
@@ -218,6 +228,24 @@ export let params = function (param?: string) {
         return param != undefined ? req.params[param] : req.params
     })
 };
+
+let contextFn = function (context?: string | { [index: string]: any }): any {
+
+    return function (target: Function, propertyKey: string, index: number | PropertyDescriptor) {
+
+        if (typeof index == "number") {
+            return customRouteParam((req: IRequest) =>
+                context != undefined ? req.route.context[context as string] : req.route.context)(target, propertyKey, index);
+
+        }
+
+        return defineRouteProperty([{name: "context", args: [context]}])(target, propertyKey, index)
+    }
+
+
+};
+
+export let context = contextFn;
 
 export let param = function () {
 
@@ -230,8 +258,6 @@ export let param = function () {
             return param != undefined ? req.params[param] : req.params
         })(target, propertyKey, index);
     }
-
-
 };
 
 export let req = function () {

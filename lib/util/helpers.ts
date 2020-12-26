@@ -8,6 +8,7 @@ import {invokeMiddleWareData} from "../middleware/middalwares/invokeMiddleWareDa
 import {MiddlewareType} from "../middleware/common/enums/enums";
 import {Middleware} from "../middleware/middleware";
 import {StaticMiddleware} from "../middleware/staticMiddleware";
+import {MiddlewareParams} from "../middleware/common/interfaces/IMiddleware";
 
 export class Helpers  {
 
@@ -24,7 +25,7 @@ export class Helpers  {
         });
     }
 
-    public static convertMiddleware(middleware: (string | MiddlewareHandlerParams |  typeof StaticMiddleware| typeof Middleware)[], type: MiddlewareType): MiddlewareHandlerParams[] {
+    public static convertMiddleware(middleware: (MiddlewareParams)[], type: MiddlewareType): MiddlewareHandlerParams[] {
 
         let output: MiddlewareHandlerParams[] = [];
 

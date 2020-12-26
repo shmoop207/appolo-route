@@ -1,10 +1,11 @@
 import {IController} from "../../controller/IController";
-import {Methods, MiddlewareHandlerParams,NextFn} from "@appolo/agent";
+import {Methods, MiddlewareHandlerParams, NextFn} from "@appolo/agent";
 import {IDefinition} from "@appolo/inject";
 import {IRequest} from "./IRequest";
 import {IResponse} from "./IResponse";
 import {StaticMiddleware} from "../../middleware/staticMiddleware";
 import {Middleware} from "../../middleware/middleware";
+import {MiddlewareParams, MiddlewareTypeAndContext} from "../../middleware/common/interfaces/IMiddleware";
 
 
 export interface IRouteOptions {
@@ -12,38 +13,31 @@ export interface IRouteOptions {
     action?: ((c: IController) => Function) | string
     environments?: string[]
     roles?: string[]
-    middleware?: (string | MiddlewareHandlerParams | typeof StaticMiddleware | typeof Middleware)[]
-    middlewareError?: (string | MiddlewareHandlerParams |  typeof StaticMiddleware | typeof Middleware)[]
+    middleware?: MiddlewareParams[]
+    middlewareError?: MiddlewareParams[]
     path?: string[]
     abstract?: boolean,
     method?: Methods[]
     order: number
     params: { [index: string]: any }
+    context: { [index: string]: any }
     controllerName?: string
     actionName?: string
     definition: IDefinition
     $initialized?: boolean
     headers: { key: string, value: string }[]
     customRouteFn: ((req: IRequest, res: IResponse, route: IRouteOptions) => void)[]
-    customRouteParam: ({ index: number, fn: (req: IRequest,res: IResponse, route: IRouteOptions,next:NextFn) => any })[]
+    customRouteParam: ({ index: number, fn: (req: IRequest, res: IResponse, route: IRouteOptions, next: NextFn) => any })[]
     statusCode: number
     gzip: boolean,
-    hooks:  {
-        preHandler: (string | MiddlewareHandlerParams |  typeof StaticMiddleware | typeof Middleware)[],
-        preMiddleware: (string | MiddlewareHandlerParams |  typeof StaticMiddleware | typeof Middleware)[],
-        onResponse: (string | MiddlewareHandlerParams |  typeof StaticMiddleware | typeof Middleware)[],
-        onRequest: (string | MiddlewareHandlerParams |  typeof StaticMiddleware | typeof Middleware)[],
-        onError: (string | MiddlewareHandlerParams |  typeof StaticMiddleware | typeof Middleware)[],
-        onSend: (string | MiddlewareHandlerParams |  typeof StaticMiddleware | typeof Middleware)[]
+    hooks: {
+        preHandler: MiddlewareParams[],
+        preMiddleware: MiddlewareParams[],
+        onResponse: MiddlewareParams[],
+        onRequest: MiddlewareParams[],
+        onError: MiddlewareParams[],
+        onSend: MiddlewareParams[]
     }
 
 
 }
-
-// export interface IRouteInnerOptions {
-//     route: IRouteOptions
-//     middlewareHandler?: MiddlewareHandler[]
-//     methodUpperCase?: string
-//     regExp: RegExp
-//     paramsKeys: { [index: string]: any }
-// }
