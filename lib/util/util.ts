@@ -1,10 +1,14 @@
 import {IRouteOptions} from "../routes/interfaces/IRouteOptions";
 import {Controller} from "../controller/controller";
-import {Functions, Strings,Reflector} from "@appolo/utils";
+import {Functions, Strings, Reflector} from "@appolo/utils";
 import {StaticController} from "../controller/staticController";
-import { Request, Response} from "@appolo/agent";
+import {Request, Response} from "@appolo/agent";
 import {Route} from "../routes/route";
-import {RouterDefinitionsCompiledSymbol, RouterDefinitionsSymbol} from "../decorators/decorators";
+import {
+    RouterDefinitionsCompiledSymbol,
+    RouterDefinitionsCompiledSymbolController,
+    RouterDefinitionsSymbol
+} from "../decorators/decorators";
 import {IController} from "../controller/IController";
 import {Util as EngineUtils} from '@appolo/engine';
 
@@ -33,7 +37,15 @@ export class Util {
 
         let route = Reflect.getMetadata(RouterDefinitionsCompiledSymbol, fn, action as string);
 
+        if (!route) {
+            route = Util.getRouteByController(fn)[action as string];
+        }
+
         return route
+    }
+
+    public static getRouteByController<T extends IController>(fn: any): { [index: string]: Route<T> } {
+        return Reflector.getFnOwnMetadata(RouterDefinitionsCompiledSymbolController, fn) || Reflector.getFnOwnMetadata(RouterDefinitionsSymbol, fn) || {}
     }
 
     public static createRouteDefinition<T extends IController>(fn: any, action: ((c: T) => Function) | string): Route<T> {

@@ -19,12 +19,12 @@ import {
 import {
     RouteCustomParamSymbol,
     RouterControllerSymbol, RouterDefinitionsClassSymbol,
-    RouterDefinitionsCompiledSymbol,
+    RouterDefinitionsCompiledSymbol, RouterDefinitionsCompiledSymbolController,
     RouterDefinitionsSymbol
 } from "../decorators/decorators";
 import {Util} from "../util/util";
 import {Util as EngineUtil} from "@appolo/engine";
-import {Classes, Objects} from '@appolo/utils';
+import {Classes, Objects, Reflector} from '@appolo/utils';
 import * as path from 'path';
 import {invokeCustomRouteMiddleWare} from "../middleware/middalwares/invokeCustomRouteMiddleWare";
 import {invokeMiddleWareError} from "../middleware/middalwares/invokeMiddleWareError";
@@ -126,6 +126,8 @@ export class Router {
             route.definition.controller = Util.getControllerName(fn as any);
 
             Reflect.defineMetadata(RouterDefinitionsCompiledSymbol, route, fn, key);
+            Reflector.getFnOwnMetadata(RouterDefinitionsCompiledSymbolController, fn, {})[key] = route;
+
 
             this.addRoute(route);
         })
@@ -170,7 +172,7 @@ export class Router {
         }
     }
 
-    public addMiddleware(path: string | MiddlewareHandlerErrorOrAny | MiddlewareHandlerOrAny |  typeof StaticMiddleware| typeof Middleware, middleware: (string | MiddlewareHandlerErrorOrAny | MiddlewareHandlerOrAny | typeof StaticMiddleware| typeof Middleware)[], error: boolean): this {
+    public addMiddleware(path: string | MiddlewareHandlerErrorOrAny | MiddlewareHandlerOrAny | typeof StaticMiddleware | typeof Middleware, middleware: (string | MiddlewareHandlerErrorOrAny | MiddlewareHandlerOrAny | typeof StaticMiddleware | typeof Middleware)[], error: boolean): this {
 
         if (typeof path !== "string") {
             middleware.unshift(path)
@@ -200,6 +202,10 @@ export class Router {
         }
 
         return this;
+    }
+
+    public get routes(): Route<IController>[] {
+        return this._routes
     }
 
 
