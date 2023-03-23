@@ -12,7 +12,7 @@ import {Util} from "../util/util";
 import {Util as EngineUtils} from "@appolo/engine";
 import {StaticMiddleware} from "../middleware/staticMiddleware";
 import {Middleware} from "../middleware/middleware";
-import {MiddlewareContext, MiddlewareTypeAndContext} from "../middleware/common/interfaces/IMiddleware";
+import {MiddlewareContext, MiddlewareType, MiddlewareTypeAndContext} from "../middleware/common/interfaces/IMiddleware";
 
 let orderIndex = 0;
 
@@ -169,15 +169,18 @@ export class Route<T extends IController> {
             }
         }
 
+
+
         if (context) {
-            this.context(context)
+            //this.context(context)
 
-        }
+            middleware = {type:middleware as MiddlewareType,context:context}
+        } else {
+            let id = EngineUtils.getClassId(middleware);
 
-        let id = EngineUtils.getClassId(middleware);
-
-        if (id) {
-            middleware = id;
+            if (id) {
+                middleware = id;
+            }
         }
 
         error ? this._route.middlewareError[arrMethod](middleware) : this._route.middleware[arrMethod](middleware);

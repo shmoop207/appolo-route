@@ -5,9 +5,14 @@ import {handleMiddlewareError} from "./invokeMiddleWare";
 import {getCustomParamsArgs} from "./getCustomParamsArgs";
 import {Middleware} from "../middleware";
 
-export function invokeMiddleWareData(middlewareId: string) {
+export function invokeMiddleWareData(middlewareId: string,context?:{ [index: string]: any }) {
     return function (data: any, req: IRequest, res: IResponse, next: NextFn) {
-        let middleware: Middleware = req.app.injector.getObject<Middleware>(middlewareId, [req, res, next, req.route]);
+        if (context) {
+            req.route.context = context;
+        }
+
+        let middleware: Middleware = req.app.injector.getObject<Middleware>(middlewareId, [req, res, next, req.route,context]);
+
 
         if (!middleware) {
             return next(new HttpError(500, `failed to find middleware ${middlewareId}`));
