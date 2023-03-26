@@ -7,7 +7,9 @@ import {BadRequestError, InternalServerError, NotFoundError, UnauthorizedError} 
 
 export abstract class StaticMiddleware  {
 
-
+    public static for(context: { [index: string]: any }) {
+        return {type: this, context}
+    }
     public run(...params:any[])
     public  run(req: IRequest, res: IResponse, next: NextFn, route: IRouteOptions): void{
         next();
